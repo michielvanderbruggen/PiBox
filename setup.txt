@@ -1,0 +1,13 @@
+sudo apt-get update
+sudo apt-get install build-essential python-dev python-smbus python-pip
+sudo pip install RPi.GPIO
+sudo python setup.py install	[in de juiste dir]
+
+cd /root/Adafruit_Python_CharLCD
+sudo python setup.py install
+
+cd /root/Adafruit_Python_MCP9808
+sudo python setup.py install
+
+sudo pip install pi-ina219
+
