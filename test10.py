@@ -33,11 +33,13 @@ def display_data():
 
 def display_track():
 # Get the track id from the Librespot log file
+	track_URI = ""
 	f = open('/var/log/librespot.log')
 	f.readline()
 	for line in f:
 		if "spotify:track:" in line:
 			track_URI = line[-24:-2]
+    print track_URI
 	f.close()
 	lcd.clear()
 
@@ -53,6 +55,7 @@ def display_track():
 	artist_start = track_end + 12
 	artist_end = line.find(" on Spotify</title><meta name")
 	artist = line [artist_start:artist_end]
+    l.close()
 	print artist, track
 
 # Display song metadata on display	

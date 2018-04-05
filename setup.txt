@@ -11,3 +11,10 @@ sudo python setup.py install
 
 sudo pip install pi-ina219
 
+sudo apt-get install i2c-tools
+
+# sudo nano /boot/config.txt
+
+sudo sed -i 's/#dtparam=i2c_arm=on/dtparam=i2c_arm=on' /boot/config.txt
+
+
