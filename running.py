@@ -58,7 +58,6 @@ def display_track():
 	f.close
 
 # Display song metadata on display	
-	print source,":",artist,"-", track
 	lcd.clear()
 	lcd.message(artist)	
         lcd.message('\n')
@@ -91,6 +90,7 @@ def check_stubru():
                         track = line[30:-8]
                         break
         f.close()
+        print source,":",artist,"-", track
 	track_playing = ""
 
 def check_spotify():
@@ -122,6 +122,8 @@ def check_spotify():
                 artist = line [artist_start:artist_end]
                 track_playing = track_URI
                 l.close()
+	        print source,":",artist,"-", track
+
 
 print
 print (time.strftime("%d/%m/%Y")), (time.strftime("%H:%M:%S"))
