@@ -53,11 +53,12 @@ def display_track():
 #		print "Source = StuBru"
 		check_stubru()
 	if source == "Spotify":
-#               print "Source = Spotify"
+#		print "Source = Spotify"
 		check_spotify()
 	f.close
 
 # Display song metadata on display	
+	print source,":",artist,"-", track
 	lcd.clear()
 	lcd.message(artist)	
         lcd.message('\n')
@@ -77,6 +78,7 @@ def check_stubru():
 # Check nu op StuBru for what's playing
         global artist
         global track
+	global track_playing
         os.system("curl http://nuopstubru.be >/root/sbplaylist.txt")
         f = open('/root/sbplaylist.txt')
         f.readline()
@@ -89,7 +91,7 @@ def check_stubru():
                         track = line[30:-8]
                         break
         f.close()
-	print source,":",artist,"-", track
+	track_playing = ""
 
 def check_spotify():
 # Get the track id from the Librespot log file
@@ -103,6 +105,7 @@ def check_spotify():
                 if "spotify:track:" in line:
                         track_URI = line[-24:-2]
         f.close()
+#	print track_URI,track_playing
         if track_URI != track_playing:
 
 # Put track metadata in templog.txt
@@ -117,7 +120,6 @@ def check_spotify():
                 artist_start = track_end + 12
                 artist_end = line.find(" on Spotify</title><meta name")
                 artist = line [artist_start:artist_end]
-                print source,":",artist,"-", track
                 track_playing = track_URI
                 l.close()
 
