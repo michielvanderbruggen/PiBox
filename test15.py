@@ -73,6 +73,14 @@ def display_track():
 #	else:
 	time.sleep(5)
 
+def fix_sring()
+	global artist
+	global track
+        if "&#039;" or "&amp;" in artist:
+                artist = artist.replace("&#039;", "'").replace("&amp;", "&")
+        if "&#039;" or "&amp;" in track:
+                track = track.replace("&#039;", "'").replace("&amp;", "&")
+
 def check_stubru():
 # Check nu op StuBru for what's playing
         global artist
@@ -90,10 +98,7 @@ def check_stubru():
                         track = line[30:-8]
                         break
         f.close()
-	if "&#039;" or "&amp;" in artist:
-		artist = artist.replace("&#039;", "'").replace("&amp;", "&")
-	if "&#039;" or "&amp;" in track:
-		track = track.replace("&#039;", "'").replace("&amp;", "&")
+	fix_string()
         print source,":",artist,"-", track
 	track_playing = ""
 
@@ -126,10 +131,7 @@ def check_spotify():
                 artist = line [artist_start:artist_end]
                 track_playing = track_URI
                 l.close()
-		if "&#039;" or "&amp;" in artist:
-	               	artist = artist.replace("&#039;", "'").replace("&amp;", "&")
-                if "&#039;" or "&amp;" in track:
-                        track = track.replace("&#039;", "'").replace("&amp;", "&")
+		fix_string
 	        print source,":",artist,"-", track
 
 
