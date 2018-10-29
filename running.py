@@ -20,11 +20,8 @@ lcd = LCD.Adafruit_CharLCDPlate()
 
 track_URI = ""
 track_playing = ""
-source = "spotify"
 
 def display_data():
-        global artist
-        global track
 	temp1 =sensor1.readTempC()
 	temp2 =sensor2.readTempC()
 	lcd.clear()
@@ -38,28 +35,9 @@ def display_data():
 	time.sleep(5)
 
 def display_track():
-# Spotify or StuBru
-        global artist
-        global track
-	global source
-	f = open('/tmp/mopidy-debug.log')
-	f.readline()
-	for line in f:
-		if("mopidy.audio.actor: Audio event: stream_changed(uri=http://icecast.vrtcdn.be/stubru-high.mp3)") in line:
-			source = "StuBru"
-		if("mopidy.internal.network: Already stopping: Actor is shutting down.") in line:
-			source = "Spotify"
-	if source == "StuBru":
-#		print "Source = StuBru"
-		check_stubru()
-	if source == "Spotify":
-#		print "Source = Spotify"
-		check_spotify()
-	f.close
-
-# Display song metadata on display	
+	check_spotify()
 	lcd.clear()
-	lcd.message(artist)	
+	lcd.message(artist)
         lcd.message('\n')
 	lcd.message(track)
 #	if len(track) > 16:
@@ -73,37 +51,13 @@ def display_track():
 #	else:
 	time.sleep(5)
 
-def check_stubru():
-# Check nu op StuBru for what's playing
-        global artist
-        global track
-	global track_playing
-        os.system("curl http://nuopstubru.be >/root/sbplaylist.txt")
-        f = open('/root/sbplaylist.txt')
-        f.readline()
-        for line in f:
-                if ("   <span class=\"artist\">") in line:
-                        artist = line[31:-8]
-                        break
-        for line in f:
-                if ("          <span class=\"title\">") in line:
-                        track = line[30:-8]
-                        break
-        f.close()
-	if "&#039;" or "&amp;" in artist:
-		artist = artist.replace("&#039;", "'").replace("&amp;", "&")
-	if "&#039;" or "&amp;" in track:
-		track = track.replace("&#039;", "'").replace("&amp;", "&")
-        print source,":",artist,"-", track
-	track_playing = ""
-
 def check_spotify():
 # Get the track id from the Librespot log file
         global artist
         global track
         global track_URI
         global track_playing
-        f = open('/var/log/librespot.log')
+        f = open('/var/log/syslog')
         f.readline()
         for line in f:
                 if "spotify:track:" in line:
@@ -113,12 +67,14 @@ def check_spotify():
         if track_URI != track_playing:
 
 # Put track metadata in templog.txt
-                os.system("curl https://open.spotify.com/track/" + track_URI + "> /root/templog.txt")
+                os.system("curl https://open.spotify.com/track/" + track_URI + "> /home/pi/templog.txt")
 
 # Get track metadata from templog.txt
-                l = open('/root/templog.txt')
+                l = open('/home/pi/templog.txt')
                 line = l.readline()
-                track_start = 107
+                line = l.readline()
+                line = l.readline()
+                track_start = 88
                 track_end = line.find(", a song by ")
                 track = line [track_start:track_end]
                 artist_start = track_end + 12
@@ -126,11 +82,11 @@ def check_spotify():
                 artist = line [artist_start:artist_end]
                 track_playing = track_URI
                 l.close()
-		if "&#039;" or "&amp;" in artist:
-	               	artist = artist.replace("&#039;", "'").replace("&amp;", "&")
-                if "&#039;" or "&amp;" in track:
-                        track = track.replace("&#039;", "'").replace("&amp;", "&")
-	        print source,":",artist,"-", track
+        	if "&#039;" or "&amp;" in artist:
+	                artist = artist.replace("&#039;", "'").replace("&amp;", "&")
+	        if "&#039;" or "&amp;" in track:
+        	        track = track.replace("&#039;", "'").replace("&amp;", "&")
+	        print "Spotify:",artist,"-", track
 
 
 print
